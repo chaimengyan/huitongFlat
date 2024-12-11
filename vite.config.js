@@ -29,10 +29,10 @@ export default ({ mode }) => {
   return defineConfig({
     plugins: [
       vue(),
-      // Components({
-      //   resolvers: [VantResolver()],
-      //   dirs: ["src/components/globalComponents"],
-      // }),
+      Components({
+        resolvers: [VantResolver()],
+        dirs: ["src/components/globalComponents"],
+      }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹(路径为存放所有svg图标的文件夹不单个svg图标)
         iconDirs: [resolve(process.cwd(), "src/assets/svg")],
