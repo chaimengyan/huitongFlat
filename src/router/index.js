@@ -6,7 +6,7 @@ let routes = [
   {
     path: "/index",
     name: "Index",
-    meta: { title: "首页", keepAlive: true },
+    meta: { title: "小区动态", keepAlive: true },
     component: () => import("@/views/index/index.vue"),
   },
   {

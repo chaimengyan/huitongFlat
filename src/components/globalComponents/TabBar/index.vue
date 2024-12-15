@@ -33,7 +33,7 @@ export default defineComponent({
     const list = [
       {
         name: "/index",
-        title: "首页",
+        title: "小区动态",
         active: new URL("@/assets/icons/home.svg", import.meta.url).href,
         normal: new URL("@/assets/icons/un_home.svg", import.meta.url).href,
       },
@@ -45,19 +45,19 @@ export default defineComponent({
       },
       {
         name: "/category",
-        title: "分类",
+        title: "业主大会",
         active: new URL("@/assets/icons/category.png", import.meta.url).href,
         normal: new URL("@/assets/icons/un_category.svg", import.meta.url).href,
       },
       {
         name: "/shopping",
-        title: "购物车",
+        title: "业主服务",
         active: new URL("@/assets/icons/shopping.svg", import.meta.url).href,
         normal: new URL("@/assets/icons/un_shopping.svg", import.meta.url).href,
       },
       {
         name: "/mine",
-        title: "我的",
+        title: "个人中心",
         active: new URL("@/assets/icons/mine.svg", import.meta.url).href,
         normal: new URL("@/assets/icons/un_mine.svg", import.meta.url).href,
       },

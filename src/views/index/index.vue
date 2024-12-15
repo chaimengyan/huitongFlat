@@ -1,62 +1,44 @@
 <template>
   <div class="container">
-    <van-swipe class="my-swipe" :autoplay="2000">
-      <van-swipe-item v-for="item in bannerList" :key="item">
-        <img :src="item.url" class="swipe-img" />
-      </van-swipe-item>
-      <template #indicator="{ active, total }">
-        <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>
-      </template>
-    </van-swipe>
+<!--    <van-swipe class="my-swipe" :autoplay="2000">-->
+<!--      <van-swipe-item v-for="item in bannerList" :key="item">-->
+<!--        <img :src="item.url" class="swipe-img" />-->
+<!--      </van-swipe-item>-->
+<!--      <template #indicator="{ active, total }">-->
+<!--        <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>-->
+<!--      </template>-->
+<!--    </van-swipe>-->
+    <div>
+      <img src="/imgs/dynamics/dynamicsBanner@3x.png" class="swipe-img" />
+    </div>
     <div class="content">
-      <!-- 菜单模块 -->
-      <van-skeleton :loading="loading">
-        <template #template>
-          <div
-            class="custom-skeleton"
-            :style="{ display: 'flex', width: '100%' }"
-          >
-            <div class="skeleton-item" v-for="item in 8" :key="item">
-              <van-config-provider :theme-vars="themeVars" style="height: 100%">
-                <van-skeleton-paragraph style="height: 100%" />
-              </van-config-provider>
+      <div class="page-title">
+        <span>通知公告</span>
+      </div>
+      <van-tabs v-model:active="active">
+        <van-tab title="政府通知">
+          <div class="card-list">
+            <div v-for="item in list" class="card-list-item">
+              <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
+              <div class="card-list-item-content">
+                <div>
+                  <div class="title">物业管理显成效</div>
+                  <div class="sub-title">以物业为主</div>
+                </div>
+                <div class="time">2024-01-01</div>
+              </div>
             </div>
           </div>
-        </template>
-        <ScrollList
-          v-if="menuList.length > 0"
-          :list="menuList"
-          icon="menuImageUrl"
-          name="menuName"
-        />
-      </van-skeleton>
-      <!-- 视频播放器 - 自定义控件 -->
-      <VideoPlayer
-        style="margin-top: 12px"
-        src="https://img.grjk520.com/36250920230512115406741.mp4"
-        poster="https://img2.baidu.com/it/u=3875916195,2675881291&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"
-      />
-      <van-button
-        style="margin: 12px auto 0"
-        round
-        @click="handleToIntegralPage"
-        >积分商城</van-button
-      >
-      <div style="margin-top: 10px">
-        <span @click="handleEidtNickname">用户昵称：</span> {{ store.nickname }}
-      </div>
-      <div style="margin-top: 10px">
-        <span @click="handleEidtAppname">APP名称：</span>
-        {{ appStore.appName }}
-      </div>
+        </van-tab>
+        <van-tab title="业委会通知">内容 2</van-tab>
+        <van-tab title="物业通知">内容 3</van-tab>
+      </van-tabs>
+
+
+
     </div>
-    <!-- <div v-for="item in 40" :key="item">哈哈哈</div>
-    <van-button round @click="handleToIntegralPage">积分商城</van-button>
-    <van-checkbox v-model="checked">复选框</van-checkbox>
-    <div v-for="item in 20" :key="item">啦啦啦</div> -->
-    <!-- 底部导航 -->
+
     <tab-bar></tab-bar>
-    <!-- <van-back-top /> -->
   </div>
 </template>
 
@@ -64,7 +46,6 @@
 import { defineComponent, ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { onActivated, onDeactivated } from "vue";
-import { getBannerList, getMenuList } from "@/api";
 import { useUserStore } from "@/store/modules/user";
 import { useAppStore } from "@/store";
 import { useLoading } from "@/hooks/useLoading";
@@ -77,14 +58,12 @@ export default defineComponent({
     const appStore = useAppStore();
     const { startLoading, stopLoading } = useLoading();
     const value = ref();
-    const checked = ref(true);
 
-    const loading = ref(true);
-    const menuList = ref([]);
-    const bannerList = ref([]);
-
+    const loading = ref(false);
     const rate = ref(4);
     const slider = ref(50);
+    const active = ref('');
+    const list = ref([{}, {}]);
 
     const images = [
       "https://img1.baidu.com/it/u=1063627317,4109173401&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
@@ -100,36 +79,8 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      startLoading();
-      getBannerList().then((res) => {
-        stopLoading();
-        console.log("数据：", res);
-        const list = res.result || [];
-        list.map(
-          (v) => (v.url = v.url.includes("http") ? v.url : `http://${v.url}`)
-        );
-        bannerList.value = list;
-      });
-      getMenuList().then((res) => {
-        setTimeout(() => {
-          loading.value = false;
-          let list = res.result || [];
-          if (list.length > 16) list = list.splice(0, 16);
-          if (list.length <= 8) {
-            menuList.value = [list];
-          } else {
-            let arr1 = [];
-            let arr2 = [];
-            list.forEach((v, i) => {
-              i < 8 ? arr1.push(v) : arr2.push(v);
-            });
-            menuList.value = [arr1, arr2];
-          }
-          console.log("菜单数据：", menuList.value);
-        }, 0);
-      });
+
       window.addEventListener("scroll", handleScroll, true);
-      // console.log("环境变量：", import.meta.env);
     });
 
     // themeVars 内的值会被转换成对应 CSS 变量
@@ -156,16 +107,9 @@ export default defineComponent({
       // console.log(scrollTop);
     }
 
-    function handleEidtNickname() {
-      store.setNickname("少年的范er");
-    }
-    function handleEidtAppname() {
-      appStore.setAppName("我是app名称-我被修改了");
-    }
 
     return {
       value,
-      checked,
       router,
       store,
       appStore,
@@ -173,12 +117,10 @@ export default defineComponent({
       slider,
       themeVars,
       loading,
-      menuList,
       images,
-      bannerList,
       handleToIntegralPage,
-      handleEidtNickname,
-      handleEidtAppname
+      active,
+      list
     };
   },
 });
@@ -186,6 +128,16 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .container {
+
+  :deep(.van-tabs__line) {
+    bottom: 50px;
+    width: 120px;
+  }
+  :deep(.van-tab.van-tab--line) {
+    border-bottom: 1px solid #eee;
+    height: 70px;
+  }
+
   .my-swipe {
     .van-swipe-item {
       height: 250px;
@@ -212,72 +164,75 @@ export default defineComponent({
 
   .content {
     text-align: center;
-    padding: 20px 12px;
+    padding: 30px;
     box-sizing: border-box;
-  }
 
-  .menu-box {
-    padding: 0 16px;
-    box-sizing: border-box;
-  }
-
-  .menu-box,
-  .custom-skeleton {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    .item,
-    .skeleton-item {
-      width: calc((100% - 36px) / 4);
-      height: 60px;
-      margin-right: 10px;
-      margin-bottom: 12px;
-
-      &:nth-child(4n) {
-        margin-right: 0;
+    .page-title {
+      text-align: left;
+      position: relative;
+      font-size: 35px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      >span {
+        padding-left: 20px;
+      }
+      &::before {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        content: "";
+        width: 10px;
+        height: 80%;
+        background: #2d68ff;
       }
     }
+  }
 
-    .item {
-      background-color: #77e4bf;
+  }
+
+
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    .card-list-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 30px 0;
+      border-bottom: 1px solid #eee;
+
+      .cover {
+        width: 220px;
+        height: 140px;
+      }
+
+      .card-list-item-content {
+        text-align: left;
+        align-self: normal;
+        width: 0;
+        flex-grow: 1;
+        margin-left: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .title {
+          font-weight: 600;
+          font-size: 25px;
+        }
+
+        .sub-title {
+          color: #575757;
+          font-size: 20px;
+          margin-top: 5px;
+        }
+
+        .time {
+          color: #575757;
+          font-size: 20px;
+        }
+      }
     }
   }
 
-  .copy {
-    height: 40px;
-    background-color: aquamarine;
-  }
-
-  .album-icon {
-    width: 30px;
-    height: 30px;
-  }
-
-  .box {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--van-primary-color);
-  }
-
-  h2 {
-    color: var(--van-primary-color);
-    text-align: center;
-    height: 40px;
-    line-height: 40px;
-    font-size: 16px;
-    font-weight: 600;
-    background-color: rgb(250, 212, 162);
-  }
-
-  .price {
-    height: 40px;
-    line-height: 40px;
-    color: @goods-price;
-    font-weight: 600;
-    background-image: @gradient-color;
-  }
-}
 
 .van-theme-dark {
   .container {

@@ -6,7 +6,7 @@
         <van-cell-group >
           <van-field
             v-model="username"
-            left-icon="phone-o"
+            left-icon="/imgs/login/phone3x.png"
             name="用户名"
             label=""
             placeholder="请输入您的手机号码"
