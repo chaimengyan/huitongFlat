@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavBar title="购物车" :left-arrow="false" />
+    <NavBar title="业主服务" :left-arrow="false" />
     <no-data></no-data>
     <!-- 底部导航 -->
     <tab-bar></tab-bar>

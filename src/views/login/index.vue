@@ -16,7 +16,7 @@
             v-model="password"
             type="password"
             name="密码"            
-            left-icon="bag-o"
+            left-icon="/imgs/login/password3x.png"
             label=""
             placeholder="请输入密码"
             :rules="[{ required: true, message: '请输入密码' }]"
@@ -24,19 +24,22 @@
           <van-field
             v-model="sms"
             center
-            left-icon="shield-o"
+            left-icon="/imgs/login/code3x.png"
             clearable
             label=""
             placeholder="请输入验证码"
           >
             <template #button>
-              <van-button size="small" type="primary">获取验证码</van-button>
+              <div style="color: #fff">获取验证码</div>
             </template>
           </van-field>
         </van-cell-group>
         <div style="margin: 16px;">
-          <van-button round block type="primary" native-type="submit">
-            提交
+          <van-button round block color="#1989fa" plain native-type="submit">
+            登录
+          </van-button>
+          <van-button round block color="#1989fa" style="margin-top:10px;" >
+            注册
           </van-button>
         </div>
       </van-form>
@@ -72,7 +75,7 @@ export default defineComponent({
 .loginForm {
   position: absolute;
   width: 100%;
-  top: 50%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -28%);
 }

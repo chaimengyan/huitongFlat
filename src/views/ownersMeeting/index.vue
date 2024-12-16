@@ -8,32 +8,28 @@
 <!--        <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>-->
 <!--      </template>-->
 <!--    </van-swipe>-->
-    <NavBar title="小区动态" :left-arrow="false" />
+    <NavBar title="业主大会" :left-arrow="false" />
     <div>
-      <img src="/imgs/dynamics/dynamicsBanner@3x.png" class="swipe-img" />
+      <!-- <img src="/imgs/dynamics/dynamicsBanner@3x.png" class="swipe-img" /> -->
     </div>
     <div class="content">
       <div class="page-title">
-        <span>通知公告</span>
+        <span>业主大会公示</span>
       </div>
-      <van-tabs v-model:active="active">
-        <van-tab title="政府通知">
-          <div class="card-list">
-            <div v-for="item in list" class="card-list-item">
-              <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
-              <div class="card-list-item-content">
-                <div>
-                  <div class="title">物业管理显成效</div>
-                  <div class="sub-title">以物业为主</div>
-                </div>
-                <div class="time">2024-01-01</div>
-              </div>
+     
+      <div class="card-list">
+        <div v-for="item in list" class="card-list-item">
+          <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
+          <div class="card-list-item-content">
+            <div>
+              <div class="title">物业管理显成效</div>
+              <div class="sub-title">以物业为主</div>
             </div>
+            <div class="time">2024-01-01</div>
           </div>
-        </van-tab>
-        <van-tab title="业委会通知">内容 2</van-tab>
-        <van-tab title="物业通知">内容 3</van-tab>
-      </van-tabs>
+        </div>
+      </div>
+  
 
 
 
