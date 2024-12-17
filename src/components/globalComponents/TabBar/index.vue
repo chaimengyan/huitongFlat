@@ -32,7 +32,7 @@ export default defineComponent({
 
     const list = [
       {
-        name: "/index",
+        name: "/dynamics",
         title: "小区动态",
         active: new URL("@/assets/icons/home.svg", import.meta.url).href,
         normal: new URL("@/assets/icons/un_home.svg", import.meta.url).href,

@@ -1,16 +1,50 @@
 <template>
   <div class="container">
-<!--    <van-swipe class="my-swipe" :autoplay="2000">-->
-<!--      <van-swipe-item v-for="item in bannerList" :key="item">-->
-<!--        <img :src="item.url" class="swipe-img" />-->
-<!--      </van-swipe-item>-->
-<!--      <template #indicator="{ active, total }">-->
-<!--        <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>-->
-<!--      </template>-->
-<!--    </van-swipe>-->
     <NavBar title="业主大会" :left-arrow="false" />
-    <div>
-      <!-- <img src="/imgs/dynamics/dynamicsBanner@3x.png" class="swipe-img" /> -->
+
+    <div class="os-banner" v-if="isAuthentication">
+      <div class="os-banner-item" style="margin-right: 10px;">
+        <img src="/imgs/ownerServices/carbg3x.png" class="carbg" />
+        <div class="banner-text">
+          <div class="text-icon">
+            <img src="/imgs/ownersMeeting/owner3x.png"  />
+          </div>
+          <div class="text-title">业主认证</div>
+          <div class="text-detail">我要添加房屋</div>
+        </div>
+      </div>
+      <div class="os-banner-item">
+        <img src="/imgs/ownerServices/decorationbg@3x.png" />
+        <div class="banner-text">
+          <div class="text-icon">
+            <img src="/imgs/ownersMeeting/household3x.png" />
+          </div>
+          <div class="text-title">住户认证</div>
+          <div class="text-detail">我要入住房屋</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="om-banner" v-else>
+      <img src="/imgs/ownersMeeting/OMbg3x.png" class="swipe-img" />
+      <div class="banner-text">
+        <div class="text-icon">
+          <img src="/imgs/ownersMeeting/owner3x.png" class="swipe-img" />
+        </div>
+        <div class="text-content">
+          <div class="content-title">尊敬的业主，</div>
+          <div class="content-title">欢迎使用通汇公寓管理</div>
+          <div class="content-detail">单元信息：12幢一单元301</div>
+        </div>
+        <div class="text-status">
+          <div class="status-icon">
+            <img src="/imgs/ownersMeeting/certified3x.png"  />
+          </div>
+          <div class="status-text">
+            已认证
+          </div>
+        </div>
+      </div>
     </div>
     <div class="content">
       <div class="page-title">
@@ -61,7 +95,7 @@ export default defineComponent({
     const slider = ref(50);
     const active = ref('');
     const list = ref([{}, {}]);
-
+    const isAuthentication = ref(false)
     const images = [
       "https://img1.baidu.com/it/u=1063627317,4109173401&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
       "https://img1.baidu.com/it/u=2734240624,2848071286&fm=253&fmt=auto&app=138&f=JPEG?w=749&h=500",
@@ -135,28 +169,84 @@ export default defineComponent({
     height: 70px;
   }
 
-  .my-swipe {
-    .van-swipe-item {
-      height: 250px;
-      line-height: 300px;
-
-      .swipe-img {
+  .os-banner {
+    display: flex;
+    margin: 30px;
+    .os-banner-item {
+      position: relative;
+      .banner-text {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        position: absolute;
+        display: flex;
+        justify-content: space-between;
+        top: 30px;
+        flex-direction: column;
+        color: #fff;
+        align-items: center;
+        .text-icon {
+          width: 60px;
+          height: 60px;
+        }
+        .text-title {
+          margin-top: 10px;
+          font-size: 30px;
+        }
+        .text-detail {
+          font-size: 20px;
+          margin-top: 10px;
+        }
       }
     }
-
-    .custom-indicator {
-      position: absolute;
-      right: 5px;
-      bottom: 5px;
-      padding: 2px 5px;
-      font-size: 12px;
-      color: #fff;
-      border-radius: 22px;
-      background: rgba(0, 0, 0, 0.3);
+  }
+  
+.om-banner {
+  position: relative;
+  margin: 30px;
+  .banner-text {
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    top: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
+    .text-icon {
+      width: 60px;
+      height: 100%;
     }
+    .text-content {
+      color: #fff;
+      margin-right: 70px;
+      .content-title {
+        font-size: 30px;
+      }
+      .content-detail {
+        font-size: 20px;
+        margin-top: 40px;
+      }
+    }
+    .text-status {
+      display: flex;
+      background-color: #fff;
+      height: 40px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 20px;
+      .status-icon {
+        width: 30px;
+        margin-right: 10px;
+      }
+      .status-text {
+        color: #4ae29c;
+        font-size: 20px;
+      }
+    }
+  }
+}
+  .swipe-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .content {

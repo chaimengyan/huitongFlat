@@ -9,8 +9,11 @@
 <!--      </template>-->
 <!--    </van-swipe>-->
     <NavBar title="小区动态" :left-arrow="false" />
-    <div>
+    <div class="dynamics-banner">
       <img src="/imgs/dynamics/dynamicsBanner@3x.png" class="swipe-img" />
+      <div class="banner-learn">
+        点击了解
+      </div>
     </div>
     <div class="content">
       <div class="page-title">
@@ -162,7 +165,20 @@ export default defineComponent({
       background: rgba(0, 0, 0, 0.3);
     }
   }
-
+.dynamics-banner {
+  position: reactive;
+  .banner-learn {
+    position: absolute;
+    top: 460px;
+    left: 40px;
+    font-size: 25px;
+    font-weight: 600;
+    background: #fff;
+    border-radius: 30px;
+    padding: 5px 60px;
+    color: #2d68ff;
+  }
+}
   .content {
     text-align: center;
     padding: 30px;

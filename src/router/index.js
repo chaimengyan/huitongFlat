@@ -2,12 +2,12 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import useSettingsStore from "@/store/modules/settings";
 
 let routes = [
-  { path: "/", redirect: "/index" },
+  { path: "/", redirect: "/dynamics" },
   {
-    path: "/index",
-    name: "Index",
+    path: "/dynamics",
+    name: "Dynamics",
     meta: { title: "小区动态", keepAlive: true },
-    component: () => import("@/views/index/index.vue"),
+    component: () => import("@/views/dynamics/index.vue"),
   },
   {
     path: "/login",
