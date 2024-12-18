@@ -1,13 +1,5 @@
 <template>
   <div class="container">
-<!--    <van-swipe class="my-swipe" :autoplay="2000">-->
-<!--      <van-swipe-item v-for="item in bannerList" :key="item">-->
-<!--        <img :src="item.url" class="swipe-img" />-->
-<!--      </van-swipe-item>-->
-<!--      <template #indicator="{ active, total }">-->
-<!--        <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>-->
-<!--      </template>-->
-<!--    </van-swipe>-->
     <NavBar title="个人中心" :left-arrow="false" />
     <div class="mine-banner">
       <img src="/imgs/mine/minebg3x.png" class="swipe-img" />
@@ -20,63 +12,81 @@
       </div>
     </div>
     <div class="content">
-      <div class="page-title">
-        <span>通知公告</span>
-      </div>
-      <van-tabs v-model:active="active">
-        <van-tab title="政府通知">
-          <div class="card-list">
-            <div v-for="item in list" class="card-list-item">
-              <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
-              <div class="card-list-item-content">
-                <div>
-                  <div class="title">物业管理显成效</div>
-                  <div class="sub-title">以物业为主</div>
-                </div>
-                <div class="time">2024-01-01</div>
-              </div>
+      <van-row :gutter="[20, 20]">
+        <van-col span="12" v-for="(item,index) in cardList" :key="index">
+          <div :class="[0,2].includes(index) ? 'mine-card card mr' : 'mine-card card'">
+            <img :src="item.img" class="card-img" />
+            <div class="card-text">
+              <div class="text-title">{{item.text}}</div>
+              <div class="text-des">{{item.des}}</div>
             </div>
           </div>
-        </van-tab>
-        <van-tab title="业委会通知">内容 2</van-tab>
-        <van-tab title="物业通知">内容 3</van-tab>
-      </van-tabs>
+        </van-col>
+      </van-row>
 
-
-
+      <div class="mine-cell card">
+        <van-cell icon="/imgs/mine/household3x.png" title="住户认证" is-link >
+          <template #right-icon>
+            <div style="display: flex;align-items: center;">
+              <div class="cell-value-yes">已认证</div>
+              <van-icon name="arrow" />
+            </div>
+          </template>
+        </van-cell>
+        <van-cell icon="/imgs/mine/OwnerCertification3x.png" title="业主认证" is-link >
+          <template #right-icon>
+            <div style="display: flex;align-items: center;">
+              <div class="cell-value-no">未认证</div>
+              <van-icon name="arrow" />
+            </div>
+          </template>
+        </van-cell>
+        <van-cell icon="/imgs/mine/collect3x.png" title="意见收集" is-link>
+          <template #right-icon>
+            <div style="display: flex;align-items: center;">
+              <van-icon name="arrow" />
+            </div>
+          </template>
+        </van-cell>
+      </div>
+      <div class="mine-btn">
+        <van-button round block color="#1989fa" style="margin-top:40px;width: 50%;" >
+          退出登录  
+        </van-button>
+      </div>
+     
     </div>
 
     <tab-bar></tab-bar>
   </div>
 </template>
 
-<script name="Home">
-import { defineComponent, ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { onActivated, onDeactivated } from "vue";
-import { useUserStore } from "@/store/modules/user";
-import { useAppStore } from "@/store";
-import { useLoading } from "@/hooks/useLoading";
+<script setup name="Mine">
+import { defineComponent, ref, reactive, onMounted ,onActivated, onDeactivated} from "vue";
 import ScrollList from "@/components/localComponents/ScrollList/index.vue";
-export default defineComponent({
-  components: { ScrollList },
-  setup() {
-    const router = useRouter();
-    const store = useUserStore();
-    const appStore = useAppStore();
-    const { startLoading, stopLoading } = useLoading();
-    const value = ref();
+  components: { ScrollList }
 
-    const loading = ref(false);
-    const rate = ref(4);
-    const slider = ref(50);
     const active = ref('');
     const list = ref([{}, {}]);
 
-    const images = [
-      "https://img1.baidu.com/it/u=1063627317,4109173401&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-      "https://img1.baidu.com/it/u=2734240624,2848071286&fm=253&fmt=auto&app=138&f=JPEG?w=749&h=500",
-      "https://img1.baidu.com/it/u=900329638,1715201440&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
+    const cardList = [
+      {
+        img: '/imgs/mine/unit3x.png',
+        text: '单元信息',
+        des: '17幢 一单元 502'
+      },{
+        img: '/imgs/mine/parkingLot3x.png',
+        text: '车位信息',
+        des: 'AG-03-1002'
+      },{
+        img: '/imgs/mine/authentication3x.png',
+        text: '尊敬的住户',
+        des: '已完成当前身份认证'
+      },{
+        img: '/imgs/mine/contact3x.png',
+        text: '联系方式',
+        des: '18236466372'
+      },
     ];
 
     onActivated(() => {
@@ -91,17 +101,6 @@ export default defineComponent({
       window.addEventListener("scroll", handleScroll, true);
     });
 
-    // themeVars 内的值会被转换成对应 CSS 变量
-    // 比如 sliderBarHeight 会转换成 `--van-slider-bar-height`
-    const themeVars = reactive({
-      rateIconFullColor: "#07c160",
-      sliderBarHeight: "4px",
-      sliderButtonWidth: "20px",
-      sliderButtonHeight: "20px",
-      sliderActiveBackground: "#07c160",
-      buttonPrimaryBackground: "#07c160",
-      buttonPrimaryBorderColor: "#07c160",
-    });
 
     function handleToIntegralPage() {
       router.push("/integral");
@@ -116,22 +115,8 @@ export default defineComponent({
     }
 
 
-    return {
-      value,
-      router,
-      store,
-      appStore,
-      rate,
-      slider,
-      themeVars,
-      loading,
-      images,
-      handleToIntegralPage,
-      active,
-      list
-    };
-  },
-});
+  
+
 </script>
 
 <style lang="less" scoped>
@@ -146,28 +131,10 @@ export default defineComponent({
     height: 70px;
   }
 
-  .my-swipe {
-    .van-swipe-item {
-      height: 250px;
-      line-height: 300px;
-
-      .swipe-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-
-    .custom-indicator {
-      position: absolute;
-      right: 5px;
-      bottom: 5px;
-      padding: 2px 5px;
-      font-size: 12px;
-      color: #fff;
-      border-radius: 22px;
-      background: rgba(0, 0, 0, 0.3);
-    }
+  .mine-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 .mine-banner {
   position: reactive;
@@ -196,28 +163,43 @@ export default defineComponent({
     }
   }
 }
+  .mr {
+    margin-right: 20px;
+  }
   .content {
     text-align: center;
     padding: 30px;
     box-sizing: border-box;
-
-    .page-title {
-      text-align: left;
-      position: relative;
-      font-size: 35px;
-      font-weight: 600;
-      margin-bottom: 20px;
-      >span {
-        padding-left: 20px;
+    margin-top: -140px;
+    .mine-card {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      .card-img {
+        border-radius: 50%;
+        width: 80px;
       }
-      &::before {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        content: "";
-        width: 10px;
-        height: 80%;
-        background: #2d68ff;
+      .card-text {
+        margin-left: 20px;
+        .text-title {
+          font-size: 26px;
+          font-weight: 600;
+        }
+        .text-des {
+          font-size: 20px;
+          color: #7e7e7e;
+          margin-top: 10px;
+        }
+      }
+    }
+    .mine-cell {
+      margin-top: 40px;
+      text-align: left;
+      .cell-value-yes {
+        color: #16d0af;
+      }
+      .cell-value-no {
+        color: red;
       }
     }
   }
@@ -239,31 +221,6 @@ export default defineComponent({
         height: 140px;
       }
 
-      .card-list-item-content {
-        text-align: left;
-        align-self: normal;
-        width: 0;
-        flex-grow: 1;
-        margin-left: 30px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        .title {
-          font-weight: 600;
-          font-size: 25px;
-        }
-
-        .sub-title {
-          color: #575757;
-          font-size: 20px;
-          margin-top: 5px;
-        }
-
-        .time {
-          color: #575757;
-          font-size: 20px;
-        }
-      }
     }
   }
 
