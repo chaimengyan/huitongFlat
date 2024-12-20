@@ -5,7 +5,7 @@
       <van-form @submit="onSubmit">
         <van-cell-group >
           <van-field
-            v-model="username"
+            v-model="form.phonenumber"
             left-icon="/imgs/login/phone3x.png"
             name="用户名"
             label=""
@@ -13,7 +13,7 @@
             :rules="[{ required: true, message: '请输入您的手机号码' }]"
           />
           <van-field
-            v-model="password"
+            v-model="form.password"
             type="password"
             name="密码"            
             left-icon="/imgs/login/password3x.png"
@@ -22,7 +22,7 @@
             :rules="[{ required: true, message: '请输入密码' }]"
           />
           <van-field
-            v-model="sms"
+            v-model="form.code"
             center
             left-icon="/imgs/login/code3x.png"
             clearable
@@ -30,7 +30,7 @@
             placeholder="请输入验证码"
           >
             <template #button>
-              <div style="color: #fff">获取验证码</div>
+              <div :class="[{display:msgKey}]" style="color: #fff" @click="handleSend">{{msgText}}</div>
             </template>
           </van-field>
         </van-cell-group>
@@ -49,26 +49,75 @@
   </div>
 </template>
 
-<script>
+<script setup name="Login">
 import { defineComponent, onMounted, ref } from "vue";
-export default defineComponent({
-  setup() {
-    const username = ref('');
-    const password = ref('');
-    const sms = ref('');
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/modules/user";
+import { useAppStore } from "@/store";
+import { useLoading } from "@/hooks/useLoading";
+import {getSmsApi} from "@/api/login.js"
+import {isPhoneNumber} from "@/utils/validate.js"
+import { showToast } from 'vant';
+    const form = ref({
+      clientId: '428a8310cd442757ae699df5d894f051',
+      code: '',
+      tenantId: '',
+      username: '',
+      password: '',
+      phonenumber: '',
+    })
+    const router = useRouter();
+    const store = useUserStore();
+    const appStore = useAppStore();
+    const { startLoading, stopLoading } = useLoading();
+    const MSGINIT = '发送验证码'
+    const MSGSCUCCESS = '${time}'+`后重发`
+    const MSGTIME = 120;
+    const msgText = ref(MSGINIT)
+    const msgTime = ref(MSGTIME)
+    const msgKey = ref(false)
+    
     const onSubmit = (values) => {
       console.log('submit', values);
     };
+
+    function handleSend() {
+        // 判断是否可以发送（时间限制）
+        if (msgKey.value) return;
+        // 发送验证码
+        if(isPhoneNumber(form.value.phonenumber)) {
+          timeCacl();
+          getSmsApi(form.value.phonenumber).then(res => {
+            if(res.data.status == 200) {
+              showToast(res.data.message)
+              timeCacl();
+            }
+          })
+        }else {
+          showToast('请输入正确的手机号')
+        }
+      }
+
+      function timeCacl() {
+        // 计时避免重复发送
+        msgText.value = MSGSCUCCESS.replace("${time}", msgTime.value);
+        msgKey.value = true;
+        const time = setInterval(() => {
+          msgTime.value--;
+          msgText.value = MSGSCUCCESS.replace("${time}", msgTime.value);
+          if (msgTime.value === 0) {
+            msgTime.value = MSGTIME;
+            msgText.value = MSGINIT;
+            msgKey.value = false;
+            clearInterval(time);
+          }
+        }, 1000);
+      }
     onMounted(() => {
       console.log('66666');
     })
-    return {
-      username,
-      password,
-      onSubmit,
-    };
-  },
-});
+
+
 </script>
 
 <style lang="less" scoped>

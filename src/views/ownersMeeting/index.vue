@@ -74,9 +74,8 @@
 </template>
 
 <script name="Home">
-import { defineComponent, ref, reactive, onMounted } from "vue";
+import { defineComponent, ref, reactive, onMounted, onActivated, onDeactivated } from "vue";
 import { useRouter } from "vue-router";
-import { onActivated, onDeactivated } from "vue";
 import { useUserStore } from "@/store/modules/user";
 import { useAppStore } from "@/store";
 import { useLoading } from "@/hooks/useLoading";
