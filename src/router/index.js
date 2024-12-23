@@ -3,12 +3,12 @@ import useSettingsStore from "@/store/modules/settings";
 import {getToken} from "@/utils/auth.js";
 
 let routes = [
-  { path: "/", redirect: "/index" },
+  { path: "/", redirect: "/dynamics" },
   {
-    path: "/index",
-    name: "Index",
+    path: "/dynamics",
+    name: "Dynamics",
     meta: { title: "小区动态", keepAlive: true },
-    component: () => import("@/views/index/index.vue"),
+    component: () => import("@/views/dynamics/index.vue"),
   },
   {
     path: "/login",
@@ -17,16 +17,22 @@ let routes = [
     component: () => import("@/views/login/index.vue"),
   },
   {
-    path: "/category",
-    name: "Category",
-    meta: { title: "分类" },
-    component: () => import("@/views/category/index.vue"),
+    path: "/register",
+    name: "Register",
+    meta: { title: "注册" },
+    component: () => import("@/views/login/register.vue"),
   },
   {
-    path: "/shopping",
-    name: "Shopping",
-    meta: { title: "购物车" },
-    component: () => import("@/views/shopping/index.vue"),
+    path: "/ownersMeeting",
+    name: "OwnersMeeting",
+    meta: { title: "业主大会" },
+    component: () => import("@/views/ownersMeeting/index.vue"),
+  },
+  {
+    path: "/ownerServices",
+    name: "OwnerServices",
+    meta: { title: "业主服务" },
+    component: () => import("@/views/ownerServices/index.vue"),
   },
   {
     path: "/mine",
