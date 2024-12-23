@@ -21,24 +21,12 @@
             placeholder="请输入密码"
             :rules="[{ required: true, message: '请输入密码' }]"
           />
-          <van-field
-            v-model="form.code"
-            center
-            left-icon="/imgs/login/code3x.png"
-            clearable
-            label=""
-            placeholder="请输入验证码"
-          >
-            <template #button>
-              <div :class="[{display:msgKey}]" style="color: #fff" @click="handleSend">{{msgText}}</div>
-            </template>
-          </van-field>
         </van-cell-group>
         <div style="margin: 16px;">
           <van-button round block color="#1989fa" plain native-type="submit">
             登录
           </van-button>
-          <van-button round block color="#1989fa" style="margin-top:10px;" >
+          <van-button round block color="#1989fa" style="margin-top:10px;" @click="toRegister" >
             注册
           </van-button>
         </div>
@@ -80,7 +68,9 @@ import { showToast } from 'vant';
     const onSubmit = (values) => {
       console.log('submit', values);
     };
-
+    function toRegister() {
+      router.push("/register");
+    }
     function handleSend() {
         // 判断是否可以发送（时间限制）
         if (msgKey.value) return;

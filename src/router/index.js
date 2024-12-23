@@ -16,6 +16,12 @@ let routes = [
     component: () => import("@/views/login/index.vue"),
   },
   {
+    path: "/register",
+    name: "Register",
+    meta: { title: "注册" },
+    component: () => import("@/views/login/register.vue"),
+  },
+  {
     path: "/ownersMeeting",
     name: "OwnersMeeting",
     meta: { title: "业主大会" },
