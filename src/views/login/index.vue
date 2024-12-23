@@ -48,6 +48,8 @@
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
+import {setToken} from "@/utils/auth.js";
+import router from "@/router/index.js";
 export default defineComponent({
   setup() {
     const username = ref('');
@@ -55,6 +57,8 @@ export default defineComponent({
     const sms = ref('');
     const onSubmit = (values) => {
       console.log('submit', values);
+      setToken('token')
+      router.push('/index')
     };
     onMounted(() => {
       console.log('66666');

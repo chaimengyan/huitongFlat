@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import useSettingsStore from "@/store/modules/settings";
+import {getToken} from "@/utils/auth.js";
 
 let routes = [
   { path: "/", redirect: "/index" },
@@ -66,6 +67,13 @@ const router = createRouter({
 // 导航守卫
 router.beforeEach((to, from, next) => {
   to.meta.title && useSettingsStore().setTitle(to.meta.title);
+  if (to.fullPath === '/login') {
+    return next();
+  }
+  const token = getToken()
+  if (!token) {
+    return next('/login');
+  }
   next();
 });
 // 导出
