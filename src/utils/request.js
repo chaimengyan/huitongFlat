@@ -44,7 +44,8 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     const res = response.data;
-    if (res.code != 1) {
+    console.log(response, 'code');
+    if (response.status != 200) {
       // 500005 用户没有token或者过期
       if (res.code == 500005) {
         removeToken();

@@ -5,7 +5,7 @@
       <van-form @submit="onSubmit">
         <van-cell-group >
           <van-field
-            v-model="form.phonenumber"
+            v-model="form.username"
             left-icon="/imgs/login/phone3x.png"
             name="用户名"
             label=""
@@ -43,16 +43,18 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/modules/user";
 import { useAppStore } from "@/store";
 import { useLoading } from "@/hooks/useLoading";
-import {getSmsApi} from "@/api/login.js"
+import {getSmsApi, loginApi} from "@/api/login.js"
 import {isPhoneNumber} from "@/utils/validate.js"
+import {setToken} from "@/utils/auth.js"
 import { showToast } from 'vant';
+
     const form = ref({
       clientId: '428a8310cd442757ae699df5d894f051',
+      grantType: 'password',
       code: '',
       tenantId: '',
       username: '',
       password: '',
-      phonenumber: '',
     })
     const router = useRouter();
     const store = useUserStore();
@@ -66,9 +68,15 @@ import { showToast } from 'vant';
     const msgKey = ref(false)
 
     const onSubmit = (values) => {
-      console.log('submit', values);
-      setToken('token')
-      router.push('/index')
+      loginApi(form.value).then(res => {
+        if(res.code === 200) {
+              setToken('token')
+              router.push('/dynamics')
+            } else {
+              showToast(res.msg)
+            }
+      })
+      
     };
     function toRegister() {
       router.push("/register");

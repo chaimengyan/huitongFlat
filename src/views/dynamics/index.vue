@@ -46,7 +46,7 @@
   </div>
 </template>
 
-<script name="Home">
+<script name="dynamics">
 import { defineComponent, ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { onActivated, onDeactivated } from "vue";

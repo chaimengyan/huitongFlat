@@ -76,10 +76,10 @@ router.beforeEach((to, from, next) => {
   if (to.fullPath === '/login') {
     return next();
   }
-  const token = getToken()
-  if (!token) {
-    return next('/login');
-  }
+  // const token = getToken()
+  // if (!token) {
+  //   return next('/login');
+  // }
   next();
 });
 // 导出

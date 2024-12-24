@@ -5,7 +5,7 @@
         <van-form @submit="onSubmit">
           <van-cell-group >
             <van-field
-              v-model="form.phonenumber"
+              v-model="form.username"
               left-icon="/imgs/login/phone3x.png"
               name="用户名"
               label=""
@@ -36,7 +36,7 @@
           </van-cell-group>
           <div style="margin: 16px;">
             <van-button round block color="#1989fa" plain native-type="submit">
-              登录
+              提交
             </van-button>
           </div>
         </van-form>
@@ -52,16 +52,17 @@
   import { useUserStore } from "@/store/modules/user";
   import { useAppStore } from "@/store";
   import { useLoading } from "@/hooks/useLoading";
-  import {getSmsApi} from "@/api/login.js"
+  import {getSmsApi, registerApi} from "@/api/login.js"
   import {isPhoneNumber} from "@/utils/validate.js"
   import { showToast } from 'vant';
       const form = ref({
         clientId: '428a8310cd442757ae699df5d894f051',
+        grantType: 'register',
+        userType: "app_user",
         code: '',
-        tenantId: '',
+        tenantId: '000000',
         username: '',
         password: '',
-        phonenumber: '',
       })
       const router = useRouter();
       const store = useUserStore();
@@ -75,16 +76,23 @@
       const msgKey = ref(false)
       
       const onSubmit = (values) => {
-        console.log('submit', values);
+        registerApi(form.value).then(res => {
+            if(res.code === 200) {
+              showToast('注册成功，请返回登录')
+              router.push("/login");
+            } else {
+              showToast(res.msg)
+            }
+        })
       };
   
       function handleSend() {
           // 判断是否可以发送（时间限制）
           if (msgKey.value) return;
           // 发送验证码
-          if(isPhoneNumber(form.value.phonenumber)) {
+          if(isPhoneNumber(form.value.username)) {
             timeCacl();
-            getSmsApi(form.value.phonenumber).then(res => {
+            getSmsApi(form.value.username).then(res => {
               if(res.data.status == 200) {
                 showToast(res.data.message)
                 timeCacl();
