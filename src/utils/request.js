@@ -32,7 +32,7 @@ service.interceptors.request.use(
       clientType: "H5",
       clientVersion: "2.2.1",
       timestamp: Date.parse(new Date()),
-      Authorization: getToken() ? "Bearer " + getToken() : undefined,
+      Authorization: getToken() ? "Bearer " + getToken() : "No Auth",
     };
     return Promise.resolve(config);
   },

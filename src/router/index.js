@@ -37,8 +37,14 @@ let routes = [
   {
     path: "/mine",
     name: "Mine",
-    meta: { title: "我的" },
+    meta: { title: "个人中心" },
     component: () => import("@/views/mine/index.vue"),
+  },
+  {
+    path: "/ownerCertification",
+    name: "OwnerCertification",
+    meta: { title: "业主认证", keepAlive: true },
+    component: () => import("@/views/mine/ownerCertification.vue"),
   },
   {
     path: "/integral",

@@ -1,5 +1,6 @@
 <template>
     <div class="container loginBg" >
+    <!-- <NavBar title="注册" :left-arrow="true" /> -->
       
       <div class="content loginForm">
         <van-form @submit="onSubmit">

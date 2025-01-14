@@ -1,24 +1,54 @@
 <template>
   <div class="container">
-    <NavBar title="个人中心" :left-arrow="false" />
+    <!-- <NavBar title="个人中心" :left-arrow="false" /> -->
     <div class="mine-banner">
       <img src="/imgs/mine/minebg3x.png" class="swipe-img" />
       <div class="banner-info">
         <img src="/imgs/mine/avatar3x.png" class="avatar-img" />
         <div class="info-text">
-          <div class="text-name">hello,xiaoming</div>
+          <div class="text-name">hello,{{userInfo.userName|| '暂未登录'}}</div>
           <div class="text-des">欢迎使用通汇公寓管理</div>
         </div>
       </div>
     </div>
     <div class="content">
       <van-row :gutter="[20, 20]">
-        <van-col span="12" v-for="(item,index) in cardList" :key="index">
-          <div :class="[0,2].includes(index) ? 'mine-card card mr' : 'mine-card card'">
-            <img :src="item.img" class="card-img" />
+        <van-col span="12">
+          <div class="mine-card card mr">
+            <img src="/imgs/mine/unit3x.png" class="card-img" />
             <div class="card-text">
-              <div class="text-title">{{item.text}}</div>
-              <div class="text-des">{{item.des}}</div>
+              <div class="text-title">单元信息</div>
+              <div class="text-des">{{userInfo.unit || "暂无"}}</div>
+            </div>
+          </div>
+        </van-col>
+        <van-col span="12">
+
+          <div class="mine-card card">
+            <img src="/imgs/mine/parkingLot3x.png" class="card-img" />
+            <div class="card-text">
+              <div class="text-title">车位信息</div>
+              <div class="text-des">{{userInfo.des|| "暂无"}}</div>
+            </div>
+          </div>
+        </van-col>
+        <van-col span="12">
+          <div class="mine-card card mr">
+            <img src="/imgs/mine/authentication3x.png" class="card-img" />
+            <div class="card-text">
+              <div class="text-title">尊敬的{{userInfo.type || '用户'}}</div>
+              <div class="text-des">
+                {{userInfo.type ? ['住户','业主'].includes(userInfo.type) ? '未完成当前身份认证' : '已完成当前身份认证' : '暂未登录'}}
+              </div>
+            </div>
+          </div>
+        </van-col>
+        <van-col span="12">
+          <div class="mine-card card">
+            <img src="/imgs/mine/contact3x.png" class="card-img" />
+            <div class="card-text">
+              <div class="text-title">联系方式</div>
+              <div class="text-des">{{userInfo.userName|| "暂无"}}</div>
             </div>
           </div>
         </van-col>
@@ -28,15 +58,19 @@
         <van-cell icon="/imgs/mine/household3x.png" title="住户认证" is-link >
           <template #right-icon>
             <div style="display: flex;align-items: center;">
-              <div class="cell-value-yes">已认证</div>
+              <div :class="userInfo.type === '住户' ? 'cell-value-yes' : 'cell-value-no'">
+                {{userInfo.type === '住户' ? '已认证' : '未认证'}}
+              </div>
               <van-icon name="arrow" />
             </div>
           </template>
         </van-cell>
-        <van-cell icon="/imgs/mine/OwnerCertification3x.png" title="业主认证" is-link >
+        <van-cell icon="/imgs/mine/OwnerCertification3x.png" title="业主认证" is-link  @click="toOwnerCertification" >
           <template #right-icon>
             <div style="display: flex;align-items: center;">
-              <div class="cell-value-no">未认证</div>
+              <div :class="userInfo.type === '业主' ? 'cell-value-yes' : 'cell-value-no'">
+                {{userInfo.type === '业主' ? '已认证' : '未认证'}}
+              </div>
               <van-icon name="arrow" />
             </div>
           </template>
@@ -50,8 +84,8 @@
         </van-cell>
       </div>
       <div class="mine-btn">
-        <van-button round block color="#1989fa" style="margin-top:40px;width: 50%;" >
-          退出登录  
+        <van-button round block color="#1989fa" style="margin-top:40px;width: 50%;" @click="logout" >
+          {{getToken() ? '退出登录' : '去登录'}}  
         </van-button>
       </div>
      
@@ -64,10 +98,15 @@
 <script setup name="Mine">
 import { defineComponent, ref, reactive, onMounted ,onActivated, onDeactivated} from "vue";
 import ScrollList from "@/components/localComponents/ScrollList/index.vue";
+import {logoutApi, getUserInfoApi} from "@/api/mine.js";
+import {removeToken, getToken} from "@/utils/auth.js"
+
+import { useRouter } from "vue-router";
+const router = useRouter();
   components: { ScrollList }
 
-    const active = ref('');
-    const list = ref([{}, {}]);
+    const userInfo = ref({});
+
 
     const cardList = [
       {
@@ -97,13 +136,34 @@ import ScrollList from "@/components/localComponents/ScrollList/index.vue";
     });
 
     onMounted(() => {
-
+      console.log(getToken(),'getToken()');
+      getUserInfo()
       window.addEventListener("scroll", handleScroll, true);
     });
 
+    function toOwnerCertification() {
+      router.push("/ownerCertification");
+    }
 
     function handleToIntegralPage() {
       router.push("/integral");
+    }
+    function logout () {
+      if(getToken()) {
+        logoutApi().then(res => {
+          removeToken()
+          router.push("/login");
+        })
+      }else {
+        router.push("/login");
+      }
+      
+    }
+
+    function getUserInfo () {
+      getUserInfoApi().then(res => {
+        userInfo.value = res
+      })
     }
 
     function handleScroll(e) {
@@ -157,6 +217,7 @@ import ScrollList from "@/components/localComponents/ScrollList/index.vue";
         font-size: 30px;
       }
       .text-des {
+        letter-spacing: 8px;
         font-size: 20px;
         margin-top: 10px;
       }

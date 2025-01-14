@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavBar title="业主服务" :left-arrow="false" />
+    <!-- <NavBar title="业主服务" :left-arrow="false" /> -->
     <div class="os-banner">
       <div class="os-banner-item" style="margin-right: 10px;">
         <img src="/imgs/ownerServices/carbg3x.png" class="carbg" />
@@ -43,14 +43,15 @@
       </div>
      
       <div class="card-list">
-        <div v-for="item in list" class="card-list-item">
-          <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
+        <div v-for="(item, index) in notifyList" class="card-list-item" :key="index">
+          <img class="cover" :src="item.imgUrl" alt="">
           <div class="card-list-item-content">
             <div>
-              <div class="title">物业管理显成效</div>
-              <div class="sub-title">以物业为主</div>
+              <div class="title">{{item.title}}</div>
+              <van-text-ellipsis class="sub-title" :content="richTextToPlainText(item.content)" />
+              <!-- <div class="sub-title">以物业为主</div> -->
             </div>
-            <div class="time">2024-01-01</div>
+            <div class="time">{{item.createTime}}</div>
           </div>
         </div>
       </div>
@@ -63,10 +64,22 @@
 <script setup name="OwnerServices">
 import { defineComponent, ref, reactive, onMounted ,onActivated, onDeactivated} from "vue";
 import ScrollList from "@/components/localComponents/ScrollList/index.vue";
+import {getOwnerServicesNotifyListApi, noSignGetOwnerServicesNotifyListApi} from "@/api/ownerServices.js";
+import { getToken} from "@/utils/auth.js"
   components: { ScrollList }
 
     const active = ref('');
-    const list = ref([{}, {}]);
+    const notifyList = ref([{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          },{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          }]);
 
     const cardList = [
       {
@@ -92,10 +105,21 @@ import ScrollList from "@/components/localComponents/ScrollList/index.vue";
     });
 
     onMounted(() => {
-
+      getOwnerServicesNotifyList()
       window.addEventListener("scroll", handleScroll, true);
     });
-
+    // JS富文本内容转化为不带元素标签的内容
+    function richTextToPlainText(richText) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(richText, 'text/html');
+      return doc.body.textContent || '';
+    }
+    function getOwnerServicesNotifyList() {
+      const Api = getToken() ? getOwnerServicesNotifyListApi() : noSignGetOwnerServicesNotifyListApi()
+      Api.then(res =>{
+        notifyList.value = res['约定公告'].length === 0 ? notifyList.value : res['约定公告']
+      })
+    }
 
     function handleToIntegralPage() {
       router.push("/integral");
@@ -116,7 +140,7 @@ import ScrollList from "@/components/localComponents/ScrollList/index.vue";
 
 <style lang="less" scoped>
 .container {
-
+  padding-top: 30px;
   :deep(.van-tabs__line) {
     bottom: 50px;
     width: 120px;

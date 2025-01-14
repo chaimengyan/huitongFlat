@@ -1,5 +1,6 @@
 <template>
   <div class="container loginBg" >
+    <!-- <NavBar title="登录" :left-arrow="true" /> -->
     
     <div class="content loginForm">
       <van-form @submit="onSubmit">
@@ -45,7 +46,7 @@ import { useAppStore } from "@/store";
 import { useLoading } from "@/hooks/useLoading";
 import {getSmsApi, loginApi} from "@/api/login.js"
 import {isPhoneNumber} from "@/utils/validate.js"
-import {setToken} from "@/utils/auth.js"
+import {setToken, getToken} from "@/utils/auth.js"
 import { showToast } from 'vant';
 
     const form = ref({
@@ -70,7 +71,8 @@ import { showToast } from 'vant';
     const onSubmit = (values) => {
       loginApi(form.value).then(res => {
         if(res.code === 200) {
-              setToken('token')
+              setToken(res.data.access_token)
+              console.log(getToken(), 'getToken()');
               router.push('/dynamics')
             } else {
               showToast(res.msg)
@@ -121,6 +123,7 @@ import { showToast } from 'vant';
 </script>
 
 <style lang="less" scoped>
+
 .loginForm {
   position: absolute;
   width: 100%;

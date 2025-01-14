@@ -8,7 +8,7 @@
 <!--        <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>-->
 <!--      </template>-->
 <!--    </van-swipe>-->
-    <NavBar title="小区动态" :left-arrow="false" />
+    <!-- <NavBar title="小区动态" :left-arrow="false" /> -->
     <div class="dynamics-banner">
       <img src="/imgs/dynamics/dynamicsBanner@3x.png" class="swipe-img" />
       <div class="banner-learn">
@@ -20,22 +20,21 @@
         <span>通知公告</span>
       </div>
       <van-tabs v-model:active="active">
-        <van-tab title="政府通知">
+        <van-tab v-for="(item,index) in notifyList" :title="item" :key="index">
           <div class="card-list">
-            <div v-for="item in list" class="card-list-item">
-              <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
+            <div v-for="n in notifyItemList[item]" class="card-list-item">
+              <img class="cover" :src="n.imgUrl" alt="">
               <div class="card-list-item-content">
                 <div>
-                  <div class="title">物业管理显成效</div>
-                  <div class="sub-title">以物业为主</div>
+                  <div class="title">{{n.title}}</div>
+                  <van-text-ellipsis class="sub-title" :content="richTextToPlainText(n.content)" />
+                  <!-- <div class="sub-title" v-html="n.content"></div> -->
                 </div>
-                <div class="time">2024-01-01</div>
+                <div class="time">{{n.createTime}}</div>
               </div>
             </div>
           </div>
         </van-tab>
-        <van-tab title="业委会通知">内容 2</van-tab>
-        <van-tab title="物业通知">内容 3</van-tab>
       </van-tabs>
 
 
@@ -46,7 +45,7 @@
   </div>
 </template>
 
-<script name="dynamics">
+<script name="dynamics" setup>
 import { defineComponent, ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { onActivated, onDeactivated } from "vue";
@@ -54,26 +53,54 @@ import { useUserStore } from "@/store/modules/user";
 import { useAppStore } from "@/store";
 import { useLoading } from "@/hooks/useLoading";
 import ScrollList from "@/components/localComponents/ScrollList/index.vue";
-export default defineComponent({
-  components: { ScrollList },
-  setup() {
+import {getCommunityDynamicsNotifyListApi, noSignGetCommunityDynamicsNotifyListApi} from "@/api/dynamics.js";
+import { getToken} from "@/utils/auth.js"
+
+  components: { ScrollList }
     const router = useRouter();
     const store = useUserStore();
     const appStore = useAppStore();
     const { startLoading, stopLoading } = useLoading();
-    const value = ref();
+    
 
-    const loading = ref(false);
-    const rate = ref(4);
     const slider = ref(50);
     const active = ref('');
-    const list = ref([{}, {}]);
-
-    const images = [
-      "https://img1.baidu.com/it/u=1063627317,4109173401&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-      "https://img1.baidu.com/it/u=2734240624,2848071286&fm=253&fmt=auto&app=138&f=JPEG?w=749&h=500",
-      "https://img1.baidu.com/it/u=900329638,1715201440&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-    ];
+    const notifyList = ref(['政府通知', '业委会通知', '物业通知']);
+    const notifyItemList = ref({
+          '政府通知': [{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          },{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          }], 
+          '业委会通知': [{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          },{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          }], 
+          '物业通知': [{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          },{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          }]
+        });
 
     onActivated(() => {
       // console.log("keep-alive初始化");
@@ -83,7 +110,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-
+      getCommunityDynamicsNotifyList()
       window.addEventListener("scroll", handleScroll, true);
     });
 
@@ -98,7 +125,20 @@ export default defineComponent({
       buttonPrimaryBackground: "#07c160",
       buttonPrimaryBorderColor: "#07c160",
     });
+    function getCommunityDynamicsNotifyList() {
+      const Api = getToken() ? getCommunityDynamicsNotifyListApi() : noSignGetCommunityDynamicsNotifyListApi()
+      Api.then(res=>{
+        notifyList.value = Object.keys(res).length === 0 ? notifyList.value : Object.keys(res)
+        notifyItemList.value = res
+      })
+    }
 
+    // JS富文本内容转化为不带元素标签的内容
+    function richTextToPlainText(richText) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(richText, 'text/html');
+      return doc.body.textContent || '';
+    }
     function handleToIntegralPage() {
       router.push("/integral");
     }
@@ -112,22 +152,6 @@ export default defineComponent({
     }
 
 
-    return {
-      value,
-      router,
-      store,
-      appStore,
-      rate,
-      slider,
-      themeVars,
-      loading,
-      images,
-      handleToIntegralPage,
-      active,
-      list
-    };
-  },
-});
 </script>
 
 <style lang="less" scoped>

@@ -34,32 +34,32 @@ export default defineComponent({
       {
         name: "/dynamics",
         title: "小区动态",
-        active: new URL("@/assets/icons/home.svg", import.meta.url).href,
-        normal: new URL("@/assets/icons/un_home.svg", import.meta.url).href,
+        active: new URL("/imgs/navbar/dynamicsA3x.png", import.meta.url).href,
+        normal: new URL("/imgs/navbar/dynamics3x.png", import.meta.url).href,
       },
-      {
-        name: "/login",
-        title: "登录",
-        active: new URL("@/assets/icons/home.svg", import.meta.url).href,
-        normal: new URL("@/assets/icons/un_home.svg", import.meta.url).href,
-      },
+      // {
+      //   name: "/login",
+      //   title: "登录",
+      //   active: new URL("@/assets/icons/home.svg", import.meta.url).href,
+      //   normal: new URL("@/assets/icons/un_home.svg", import.meta.url).href,
+      // },
       {
         name: "/ownersMeeting",
         title: "业主大会",
-        active: new URL("@/assets/icons/category.png", import.meta.url).href,
-        normal: new URL("@/assets/icons/un_category.svg", import.meta.url).href,
+        active: new URL("/imgs/navbar/ownersMeetingA3x.png", import.meta.url).href,
+        normal: new URL("/imgs/navbar/ownersMeeting3x.png", import.meta.url).href,
       },
       {
         name: "/ownerServices",
         title: "业主服务",
-        active: new URL("@/assets/icons/shopping.svg", import.meta.url).href,
-        normal: new URL("@/assets/icons/un_shopping.svg", import.meta.url).href,
+        active: new URL("/imgs/navbar/ownerServicesA3x.png", import.meta.url).href,
+        normal: new URL("/imgs/navbar/ownerServices3x.png", import.meta.url).href,
       },
       {
         name: "/mine",
         title: "个人中心",
-        active: new URL("@/assets/icons/mine.svg", import.meta.url).href,
-        normal: new URL("@/assets/icons/un_mine.svg", import.meta.url).href,
+        active: new URL("/imgs/navbar/mineA3x.png", import.meta.url).href,
+        normal: new URL("/imgs/navbar/mine3x.png", import.meta.url).href,
       },
     ];
 

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavBar title="业主大会" :left-arrow="false" />
+    <!-- <NavBar title="业主大会" :left-arrow="false" /> -->
 
     <div class="os-banner" v-if="isAuthentication">
       <div class="os-banner-item" style="margin-right: 10px;">
@@ -52,14 +52,16 @@
       </div>
      
       <div class="card-list">
-        <div v-for="item in list" class="card-list-item">
-          <img class="cover" src="/imgs/dynamics/dynamicsBanner@3x.png" alt="">
+        <div v-for="(item, index) in notifyList" class="card-list-item" :key="index">
+          <img class="cover" :src="item.imgUrl" alt="">
           <div class="card-list-item-content">
             <div>
-              <div class="title">物业管理显成效</div>
-              <div class="sub-title">以物业为主</div>
+              <div class="title">{{item.title}}</div>
+              <van-text-ellipsis class="sub-title" :content="richTextToPlainText(item.content)" />
+
+              <!-- <div class="sub-title">以物业为主</div> -->
             </div>
-            <div class="time">2024-01-01</div>
+            <div class="time">{{item.createTime}}</div>
           </div>
         </div>
       </div>
@@ -73,33 +75,34 @@
   </div>
 </template>
 
-<script name="Home">
+<script setup name="Home">
 import { defineComponent, ref, reactive, onMounted, onActivated, onDeactivated } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/modules/user";
 import { useAppStore } from "@/store";
 import { useLoading } from "@/hooks/useLoading";
 import ScrollList from "@/components/localComponents/ScrollList/index.vue";
-export default defineComponent({
-  components: { ScrollList },
-  setup() {
+import {getOwnersMeetingNotifyListApi, noSignGetOwnersMeetingNotifyListApi} from "@/api/ownersMeeting.js";
+import { getToken} from "@/utils/auth.js"
+  components: { ScrollList }
     const router = useRouter();
     const store = useUserStore();
     const appStore = useAppStore();
     const { startLoading, stopLoading } = useLoading();
     const value = ref();
 
-    const loading = ref(false);
-    const rate = ref(4);
-    const slider = ref(50);
-    const active = ref('');
-    const list = ref([{}, {}]);
+    const notifyList = ref([{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          },{
+            imgUrl: '/imgs/dynamics/dynamicsBanner@3x.png',
+            title: '物业管理显成效',
+            content: '以物业为主以物业为主以物业为主以物业为主',
+            createTime: '2024-01-01',
+          }]);
     const isAuthentication = ref(false)
-    const images = [
-      "https://img1.baidu.com/it/u=1063627317,4109173401&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-      "https://img1.baidu.com/it/u=2734240624,2848071286&fm=253&fmt=auto&app=138&f=JPEG?w=749&h=500",
-      "https://img1.baidu.com/it/u=900329638,1715201440&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-    ];
 
     onActivated(() => {
       // console.log("keep-alive初始化");
@@ -109,7 +112,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-
+      getOwnersMeetingNotifyList()
       window.addEventListener("scroll", handleScroll, true);
     });
 
@@ -125,6 +128,19 @@ export default defineComponent({
       buttonPrimaryBorderColor: "#07c160",
     });
 
+    function getOwnersMeetingNotifyList() {
+      const Api = getToken() ? getOwnersMeetingNotifyListApi() : noSignGetOwnersMeetingNotifyListApi()
+      Api.then(res => {
+        notifyList.value = res['业主大会公示'].length === 0 ? notifyList.value : res['业主大会公示']
+      })
+    }
+
+    // JS富文本内容转化为不带元素标签的内容
+    function richTextToPlainText(richText) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(richText, 'text/html');
+      return doc.body.textContent || '';
+    }
     function handleToIntegralPage() {
       router.push("/integral");
     }
@@ -137,28 +153,11 @@ export default defineComponent({
       // console.log(scrollTop);
     }
 
-
-    return {
-      value,
-      router,
-      store,
-      appStore,
-      rate,
-      slider,
-      themeVars,
-      loading,
-      images,
-      handleToIntegralPage,
-      active,
-      list
-    };
-  },
-});
 </script>
 
 <style lang="less" scoped>
 .container {
-
+  padding-top: 30px;
   :deep(.van-tabs__line) {
     bottom: 50px;
     width: 120px;
